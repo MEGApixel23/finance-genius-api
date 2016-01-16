@@ -1,0 +1,49 @@
+{
+    "name": "megapixel23/yii2-api-template",
+    "description": "Yii 2 API Project Template",
+    "keywords": ["yii2", "framework", "basic", "api project template"],
+    "type": "project",
+    "minimum-stability": "stable",
+    "authors": [
+        {
+            "name": "MEGApixel23",
+            "email": "megapixel23@ya.ru"
+        }
+    ],
+    "version": "0.0.1-dev",
+    "require": {
+        "php": ">=5.4.0",
+        "yiisoft/yii2": ">=2.0.5"
+    },
+    "require-dev": {
+        "yiisoft/yii2-codeception": "*",
+        "yiisoft/yii2-debug": "*",
+        "yiisoft/yii2-gii": "*"
+    },
+    "config": {
+        "process-timeout": 1800
+    },
+    "scripts": {
+        "post-create-project-cmd": [
+            "yii\\composer\\Installer::postCreateProject"
+        ]
+    },
+    "extra": {
+        "yii\\composer\\Installer::postCreateProject": {
+            "setPermission": [
+                {
+                    "runtime": "0777",
+                    "web/assets": "0777",
+                    "yii": "0755"
+                }
+            ],
+            "generateCookieValidationKey": [
+                "config/web.php"
+            ]
+        },
+        "asset-installer-paths": {
+            "npm-asset-library": "vendor/npm",
+            "bower-asset-library": "vendor/bower"
+        }
+    }
+}
