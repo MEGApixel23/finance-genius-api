@@ -1,12 +1,9 @@
 <?php
 
-use api\v1\helpers\ResponseFormatter;
-use api\v1\helpers\ErrorCodes;
-
 $params = require(__DIR__ . '/params.php');
 
 $config = [
-    'id' => 'api-melo',
+    'id' => 'api-fg',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
 
@@ -36,7 +33,8 @@ $config = [
             'enableStrictParsing' => true,
             'showScriptName' => false,
             'rules' => [
-
+                '/auth' => 'v1/user/auth',
+                '/sign-up' => 'v1/user/sign-up'
             ],
         ],
 
