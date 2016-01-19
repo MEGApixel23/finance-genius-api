@@ -2,6 +2,7 @@
 
 namespace api\v1\forms;
 
+use api\v1\models\Device;
 use api\v1\models\User;
 use yii\base\Model;
 
@@ -18,7 +19,7 @@ class SignUpForm extends Model
             ['email', 'filter', 'filter' => 'trim'],
             ['email', 'required'],
             ['email', 'email'],
-            ['email', 'unique', 'targetClass' => User::className(), 'message' => 'test'],
+            ['email', 'unique', 'targetClass' => User::className()],
 
             ['password', 'required'],
             ['password', 'string'],
@@ -47,6 +48,14 @@ class SignUpForm extends Model
         if (!$user->save())
             return false;
 
-        return $user;
+        $device = new Device();
+        $device->user_id = $user->id;
+        $device->generateToken();
+
+        if (!$device->save()) {
+            return false;
+        }
+
+        return ['user' => $user, 'device' => $device];
     }
 }

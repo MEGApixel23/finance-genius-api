@@ -3,6 +3,7 @@
 namespace api\v1\models;
 
 use Yii;
+use yii\db\ActiveQuery;
 
 /**
  * This is the model class for table "user".
@@ -59,5 +60,21 @@ class User extends \yii\db\ActiveRecord
     public function getUserGroups()
     {
         return $this->hasMany(UserGroup::className(), ['user_id' => 'id']);
+    }
+
+    /**
+     * @param $token
+     * @return ActiveQuery|null
+     */
+    public static function findByToken($token)
+    {
+        $userQuery = null;
+        $device = Device::find()->where(['token' => $token])->limit(1)->one();
+
+        if ($device) {
+            $userQuery = User::find()->andWhere(['id' => $device->user_id]);
+        }
+
+        return $userQuery;
     }
 }

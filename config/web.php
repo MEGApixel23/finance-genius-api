@@ -18,6 +18,11 @@ $config = [
             'class' => 'yii\caching\FileCache',
         ],
 
+        'request' => [
+            'enableCookieValidation' => false,
+            'enableCsrfValidation' => false
+        ],
+
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets' => [
@@ -33,8 +38,12 @@ $config = [
             'enableStrictParsing' => true,
             'showScriptName' => false,
             'rules' => [
-                '/auth' => 'v1/user/auth',
-                '/sign-up' => 'v1/user/sign-up'
+                'POST /auth' => 'v1/user/auth',
+                'POST /sign-up' => 'v1/user/sign-up',
+
+                // Transactions
+                'GET /transaction' => 'v1/transaction/index',
+                'POST /transaction' => 'v1/transaction/create'
             ],
         ],
 
