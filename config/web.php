@@ -5,7 +5,9 @@ $params = require(__DIR__ . '/params.php');
 $config = [
     'id' => 'api-fg',
     'basePath' => dirname(__DIR__),
-    'bootstrap' => ['log'],
+    'bootstrap' => ['log', function () {
+        header('Access-Control-Allow-Origin: *');
+    }],
 
     'modules' => [
         'v1' => [
@@ -20,7 +22,7 @@ $config = [
 
         'request' => [
             'enableCookieValidation' => false,
-            'enableCsrfValidation' => false
+            'enableCsrfValidation' => false,
         ],
 
         'log' => [
@@ -50,7 +52,6 @@ $config = [
                 'GET /wallet' => 'v1/wallet/index',
                 'POST /wallet' => 'v1/wallet/create',
                 'PUT /wallet/<id:\d+>' => 'v1/wallet/update',
-
 
                 // Categories
                 'GET /category' => 'v1/category/index',
