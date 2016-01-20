@@ -14,9 +14,10 @@ class UserController extends ApiBaseController
         $form = new AuthForm();
         $form->load(Yii::$app->request->post(), '');
 
-        if ($form->validate() && $form->auth()) {
+        if ($form->validate() && ($result = $form->auth())) {
             return [
-                'status' => true
+                'status' => true,
+                'result' => $result
             ];
         }
 

@@ -55,6 +55,11 @@ class User extends ApiActiveRecord implements IUser
         ];
     }
 
+    public function validatePassword($password)
+    {
+        return $this->password_hash === $password;
+    }
+
     /**
      * @return \yii\db\ActiveQuery
      */
