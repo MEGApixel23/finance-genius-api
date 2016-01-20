@@ -2,6 +2,7 @@
 
 namespace api\v1\models;
 
+use api\v1\models\interfaces\IUser;
 use Yii;
 use yii\db\ActiveQuery;
 
@@ -17,7 +18,7 @@ use yii\db\ActiveQuery;
  *
  * @property UserGroup[] $userGroups
  */
-class User extends \yii\db\ActiveRecord
+class User extends ApiActiveRecord implements IUser
 {
     /**
      * @inheritdoc
@@ -60,6 +61,11 @@ class User extends \yii\db\ActiveRecord
     public function getUserGroups()
     {
         return $this->hasMany(UserGroup::className(), ['user_id' => 'id']);
+    }
+
+    public function getId()
+    {
+        return $this->id;
     }
 
     /**

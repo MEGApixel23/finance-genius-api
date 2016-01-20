@@ -28,7 +28,6 @@ class UserController extends ApiBaseController
 
     public function actionSignUp()
     {
-
         $form = new SignUpForm();
         $form->load(Yii::$app->request->post(), '');
 

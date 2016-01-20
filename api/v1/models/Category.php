@@ -3,26 +3,36 @@
 namespace api\v1\models;
 
 use Yii;
+use yii\behaviors\TimestampBehavior;
 
 /**
- * This is the model class for table "device".
+ * This is the model class for table "category".
  *
  * @property integer $id
+ * @property string $name
  * @property integer $user_id
- * @property string $token
- * @property integer $token_expires_at
  * @property integer $created_at
  * @property integer $updated_at
  * @property integer $deleted
  */
-class Device extends ApiActiveRecord
+class Category extends ApiActiveRecord
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'device';
+        return 'category';
+    }
+
+    /**
+     * @return array
+     */
+    public function behaviors()
+    {
+        return array_merge([
+            TimestampBehavior::className(),
+        ], parent::behaviors());
     }
 
     /**
@@ -31,10 +41,11 @@ class Device extends ApiActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'token_expires_at'], 'required'],
-            [['user_id', 'token_expires_at', 'created_at', 'updated_at', 'deleted'], 'integer'],
-            [['token'], 'string', 'max' => 255],
-            [['token'], 'unique']
+            [['user_id'], 'required'],
+
+            [['name'], 'string', 'max' => 255],
+
+            [['user_id', 'created_at', 'updated_at', 'deleted'], 'integer']
         ];
     }
 
@@ -45,19 +56,11 @@ class Device extends ApiActiveRecord
     {
         return [
             'id' => 'ID',
+            'name' => 'Name',
             'user_id' => 'User ID',
-            'token' => 'Token',
-            'token_expires_at' => 'Token Expires At',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
             'deleted' => 'Deleted',
         ];
-    }
-
-    public function generateToken()
-    {
-        $this->token = (string) time();
-        $this->token_expires_at = time() + 10000;
-        return $this->token;
     }
 }

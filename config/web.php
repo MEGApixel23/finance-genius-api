@@ -38,12 +38,24 @@ $config = [
             'enableStrictParsing' => true,
             'showScriptName' => false,
             'rules' => [
+                // Auth & SignUp
                 'POST /auth' => 'v1/user/auth',
                 'POST /sign-up' => 'v1/user/sign-up',
 
                 // Transactions
                 'GET /transaction' => 'v1/transaction/index',
-                'POST /transaction' => 'v1/transaction/create'
+                'POST /transaction' => 'v1/transaction/create',
+
+                // Wallets
+                'GET /wallet' => 'v1/wallet/index',
+                'POST /wallet' => 'v1/wallet/create',
+                'PUT /wallet/<id:\d+>' => 'v1/wallet/update',
+
+
+                // Categories
+                'GET /category' => 'v1/category/index',
+                'GET /categories' => 'v1/category/index',
+                'POST /category' => 'v1/category/create',
             ],
         ],
 
