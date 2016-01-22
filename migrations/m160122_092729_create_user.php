@@ -1,21 +1,18 @@
 <?php
 
-use yii\db\Migration;
+use app\extensions\TimestampMigration;
 
-class m160118_095318_create_user extends Migration
+class m160122_092729_create_user extends TimestampMigration
 {
     private $table = '{{%user}}';
 
     public function safeUp()
     {
-        $this->createTable($this->table, [
+        $this->createTable($this->table, $this->addTimestampData([
             'id' => $this->primaryKey(),
             'email' => $this->string()->unique(),
             'password_hash' => $this->string()->defaultValue(null),
-            'created_at' => $this->integer(10)->defaultValue(null),
-            'updated_at' => $this->integer(10)->defaultValue(null),
-            'deleted' => $this->boolean()->defaultValue(false),
-        ]);
+        ]));
     }
 
     public function safeDown()
