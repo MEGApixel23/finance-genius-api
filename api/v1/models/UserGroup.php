@@ -2,31 +2,30 @@
 
 namespace api\v1\models;
 
-use api\v1\models\interfaces\IWallet;
+use api\v1\models\interfaces\IUserGroup;
 use Yii;
 
 /**
- * This is the model class for table "wallet".
+ * This is the model class for table "user_group".
  *
  * @property integer $id
- * @property string $name
  * @property integer $user_id
+ * @property integer $group_id
  * @property integer $created_at
  * @property integer $updated_at
  * @property integer $deleted
  *
- * @property Transaction[] $transactions
+ * @property Group $group
  * @property User $user
- * @property WalletAmount[] $walletAmounts
  */
-class Wallet extends ApiActiveRecord implements IWallet
+class UserGroup extends ApiActiveRecord implements IUserGroup
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'wallet';
+        return 'user_group';
     }
 
     /**
@@ -35,9 +34,8 @@ class Wallet extends ApiActiveRecord implements IWallet
     public function rules()
     {
         return [
-            [['user_id'], 'required'],
-            [['user_id', 'created_at', 'updated_at', 'deleted'], 'integer'],
-            [['name'], 'string', 'max' => 255]
+            [['user_id', 'group_id'], 'required'],
+            [['user_id', 'group_id', 'created_at', 'updated_at', 'deleted'], 'integer']
         ];
     }
 
@@ -48,8 +46,8 @@ class Wallet extends ApiActiveRecord implements IWallet
     {
         return [
             'id' => 'ID',
-            'name' => 'Name',
             'user_id' => 'User ID',
+            'group_id' => 'Group ID',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
             'deleted' => 'Deleted',
@@ -59,9 +57,9 @@ class Wallet extends ApiActiveRecord implements IWallet
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getTransactions()
+    public function getGroup()
     {
-        return $this->hasMany(Transaction::className(), ['wallet_id' => 'id']);
+        return $this->hasOne(Group::className(), ['id' => 'group_id']);
     }
 
     /**
@@ -70,13 +68,5 @@ class Wallet extends ApiActiveRecord implements IWallet
     public function getUser()
     {
         return $this->hasOne(User::className(), ['id' => 'user_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getWalletAmounts()
-    {
-        return $this->hasMany(WalletAmount::className(), ['wallet_id' => 'id']);
     }
 }

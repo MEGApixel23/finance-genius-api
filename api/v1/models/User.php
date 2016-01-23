@@ -4,7 +4,6 @@ namespace api\v1\models;
 
 use api\v1\models\interfaces\IUser;
 use Yii;
-use yii\db\ActiveQuery;
 
 /**
  * This is the model class for table "user".
@@ -16,7 +15,12 @@ use yii\db\ActiveQuery;
  * @property integer $updated_at
  * @property integer $deleted
  *
+ * @property Category[] $categories
+ * @property Client[] $clients
+ * @property Currency[] $currencies
+ * @property Transaction[] $transactions
  * @property UserGroup[] $userGroups
+ * @property Wallet[] $wallets
  */
 class User extends ApiActiveRecord implements IUser
 {
@@ -55,9 +59,36 @@ class User extends ApiActiveRecord implements IUser
         ];
     }
 
-    public function validatePassword($password)
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCategories()
     {
-        return $this->password_hash === $password;
+        return $this->hasMany(Category::className(), ['user_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getClients()
+    {
+        return $this->hasMany(Client::className(), ['user_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCurrencies()
+    {
+        return $this->hasMany(Currency::className(), ['user_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTransactions()
+    {
+        return $this->hasMany(Transaction::className(), ['user_id' => 'id']);
     }
 
     /**
@@ -68,9 +99,12 @@ class User extends ApiActiveRecord implements IUser
         return $this->hasMany(UserGroup::className(), ['user_id' => 'id']);
     }
 
-    public function getId()
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getWallets()
     {
-        return $this->id;
+        return $this->hasMany(Wallet::className(), ['user_id' => 'id']);
     }
 
     /**
@@ -80,10 +114,10 @@ class User extends ApiActiveRecord implements IUser
     public static function findByToken($token)
     {
         $userQuery = null;
-        $device = Device::find()->where(['token' => $token])->limit(1)->one();
+        $client = Client::find()->where(['token' => $token])->limit(1)->one();
 
-        if ($device) {
-            $userQuery = User::find()->andWhere(['id' => $device->user_id]);
+        if ($client) {
+            $userQuery = User::find()->andWhere(['id' => $client->user_id]);
         }
 
         return $userQuery;

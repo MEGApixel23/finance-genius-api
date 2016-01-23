@@ -2,6 +2,6 @@
 
 namespace api\v1\models\interfaces;
 
-interface IUser extends IApiActiveRecord
+interface IClient extends IApiActiveRecord
 {
 }

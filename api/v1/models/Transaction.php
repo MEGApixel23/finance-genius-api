@@ -2,8 +2,8 @@
 
 namespace api\v1\models;
 
+use api\v1\models\interfaces\ITransaction;
 use Yii;
-use yii\behaviors\TimestampBehavior;
 
 /**
  * This is the model class for table "transaction".
@@ -11,17 +11,25 @@ use yii\behaviors\TimestampBehavior;
  * @property integer $id
  * @property integer $user_id
  * @property integer $wallet_id
+ * @property integer $currency_id
  * @property integer $category_id
+ * @property integer $type
+ * @property string $comment
+ * @property string $amount
  * @property string $amount_before
  * @property string $amount_after
- * @property string $amount
- * @property string $comment
- * @property integer $type
+ * @property integer $done_at
  * @property integer $created_at
  * @property integer $updated_at
  * @property integer $deleted
+ *
+ * @property Category $category
+ * @property User $user
+ * @property Wallet $wallet
+ * @property Transfer[] $transfers
+ * @property Transfer[] $transfers0
  */
-class Transaction extends ApiActiveRecord
+class Transaction extends ApiActiveRecord implements ITransaction
 {
     const TYPE_INCOME = 1;
     const TYPE_OUTCOME = 2;
@@ -36,81 +44,16 @@ class Transaction extends ApiActiveRecord
     }
 
     /**
-     * @return array
-     */
-    public function behaviors()
-    {
-        return array_merge([
-            TimestampBehavior::className(),
-        ], parent::behaviors());
-    }
-
-    /**
      * @inheritdoc
      */
     public function rules()
     {
         return [
-            [['user_id', 'wallet_id'], 'required'],
-
-            [['amount'], 'required'],
-
-            [['type'], 'required'],
-            [['type'], 'integer'],
-            [['type'], 'in', 'range' => [
-                static::TYPE_INCOME, self::TYPE_OUTCOME, self::TYPE_TRANSFER
-            ]],
-
-            [['wallet_id'], 'integer'],
-            [['wallet_id'], 'walletValidator'],
-
-            [['category_id'], 'required'],
-            [['category_id'], 'integer'],
-            [['category_id'], 'categoriesValidator'],
-
-            [['user_id', 'type', 'created_at', 'updated_at', 'deleted'], 'integer'],
-            [['amount_before', 'amount_after', 'amount'], 'number'],
+            [['user_id', 'wallet_id', 'currency_id', 'category_id', 'type', 'done_at'], 'required'],
+            [['user_id', 'wallet_id', 'currency_id', 'category_id', 'type', 'done_at', 'created_at', 'updated_at', 'deleted'], 'integer'],
+            [['amount', 'amount_before', 'amount_after'], 'number'],
             [['comment'], 'string', 'max' => 255]
         ];
-    }
-
-    public function getWallet()
-    {
-        return $this->hasOne(Wallet::className(), ['id' => 'wallet_id']);
-    }
-
-    public function walletValidator($attr)
-    {
-        $wallet = Wallet::find()->where(['id' => $this->$attr])->limit(1)->one();
-
-        if (!$wallet) {
-            $this->addError($attr, 'There is no such wallet');
-            return false;
-        }
-
-        if ($wallet->user_id != $this->user_id) {
-            $this->addError($attr, "This wallet isn't your's");
-            return false;
-        }
-
-        return true;
-    }
-
-    public function categoriesValidator($attr)
-    {
-        $category = Category::find()->where(['id' => $this->$attr])->limit(1)->one();
-
-        if (!$category) {
-            $this->addError($attr, 'There is no such category');
-            return false;
-        }
-
-        if ($category->user_id != $this->user_id) {
-            $this->addError($attr, "This category isn't your's");
-            return false;
-        }
-
-        return true;
     }
 
     /**
@@ -122,52 +65,57 @@ class Transaction extends ApiActiveRecord
             'id' => 'ID',
             'user_id' => 'User ID',
             'wallet_id' => 'Wallet ID',
+            'currency_id' => 'Currency ID',
             'category_id' => 'Category ID',
+            'type' => 'Type',
+            'comment' => 'Comment',
+            'amount' => 'Amount',
             'amount_before' => 'Amount Before',
             'amount_after' => 'Amount After',
-            'amount' => 'Amount',
-            'comment' => 'Comment',
-            'type' => 'Type',
+            'done_at' => 'Done At',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
             'deleted' => 'Deleted',
         ];
     }
 
-    public function beforeSave($insert)
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCategory()
     {
-        if ($insert) {
-            $wallet = $this->getWallet()->one();
-            if (!$wallet)
-                return false;
-
-            /* @var $wallet \api\v1\models\Wallet */
-
-            $this->amount_before = $wallet->amount;
-            $this->amount_after = $this->calculateAmountAfter();
-
-            $wallet->amount = $this->amount_after;
-
-            if (!$wallet->save())
-                return false;
-        }
-
-        return parent::beforeSave($insert);
+        return $this->hasOne(Category::className(), ['id' => 'category_id']);
     }
 
     /**
-     * @return float
+     * @return \yii\db\ActiveQuery
      */
-    public function calculateAmountAfter()
+    public function getUser()
     {
-        if ($this->type == static::TYPE_INCOME) {
-            return (float) $this->amount_before + (float) $this->amount;
-        } elseif ($this->type == static::TYPE_OUTCOME) {
-            return (float) $this->amount_before - (float) $this->amount;
-        } elseif ($this->type == static::TYPE_TRANSFER) {
-            return (float) $this->amount_before - (float) $this->amount;
-        }
+        return $this->hasOne(User::className(), ['id' => 'user_id']);
+    }
 
-        return 0.0;
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getWallet()
+    {
+        return $this->hasOne(Wallet::className(), ['id' => 'wallet_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTransfers()
+    {
+        return $this->hasOne(Transfer::className(), ['income_transaction_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTransfers0()
+    {
+        return $this->hasOne(Transfer::className(), ['outcome_transaction_id' => 'id']);
     }
 }

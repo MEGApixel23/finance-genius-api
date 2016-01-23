@@ -2,6 +2,7 @@
 
 namespace api\v1\models\interfaces;
 
-interface IUser extends IApiActiveRecord
+interface ICategory extends IApiActiveRecord
 {
+
 }
