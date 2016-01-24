@@ -2,11 +2,12 @@
 
 namespace api\v1\forms;
 
+use api\v1\models\Client;
 use api\v1\models\Device;
 use api\v1\models\User;
 use yii\base\Model;
 
-class SignUpForm extends Model
+class SignUpForm extends ApiForm
 {
     public $email;
     public $password;
@@ -26,36 +27,28 @@ class SignUpForm extends Model
         ];
     }
 
-    public function emailValidator($attr, $params)
-    {
-        if (!$this->hasErrors($attr)) {
-            $existedUser = User::find()->where([$attr => $this->$attr])->limit(1)->one();
-
-            if ($existedUser) {
-                $this->addError($attr, $params['message']);
-                return false;
-            }
-        }
-    }
-
     public function signUp()
     {
+        if (!$this->validate())
+            return false;
+
         $user = new User();
 
         $user->email = $this->email;
-        $user->password_hash = $this->password;
+        $user->setPassword($this->password);
 
         if (!$user->save())
             return false;
 
-        $device = new Device();
-        $device->user_id = $user->id;
-        $device->generateToken();
+        $client = new Client();
+        $client->setUser($user);
+        $client->generateToken();
 
-        if (!$device->save()) {
+        if (!$client->save()) {
+            print_r($client); die();
             return false;
         }
 
-        return ['user' => $user, 'device' => $device];
+        return ['user' => $user, 'client' => $client];
     }
 }

@@ -2,8 +2,9 @@
 
 namespace api\v1\models;
 
-use api\v1\models\interfaces\IUser;
 use Yii;
+use api\v1\models\interfaces\IUser;
+use yii\db\ActiveQuery;
 
 /**
  * This is the model class for table "user".
@@ -105,6 +106,11 @@ class User extends ApiActiveRecord implements IUser
     public function getWallets()
     {
         return $this->hasMany(Wallet::className(), ['user_id' => 'id']);
+    }
+
+    public function setPassword($password)
+    {
+        $this->password_hash = md5($password);
     }
 
     /**

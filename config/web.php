@@ -41,8 +41,8 @@ $config = [
             'showScriptName' => false,
             'rules' => [
                 // Auth & SignUp
-                'POST /auth' => 'v1/user/auth',
-                'POST /sign-up' => 'v1/user/sign-up',
+                'POST /sign-up' => 'v1/auth/sign-up',
+                'POST /auth' => 'v1/auth/auth',
 
                 // Transactions
                 'GET /transaction' => 'v1/transaction/index',

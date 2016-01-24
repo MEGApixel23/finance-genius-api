@@ -36,7 +36,8 @@ class Client extends ApiActiveRecord implements IClient
         return [
             [['user_id'], 'required'],
             [['user_id', 'created_at', 'updated_at', 'deleted'], 'integer'],
-            [['token', 'token_expires_at'], 'string', 'max' => 255],
+            [['token_expires_at'], 'integer'],
+            [['token'], 'string', 'max' => 255],
             [['token'], 'unique']
         ];
     }
