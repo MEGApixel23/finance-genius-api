@@ -26,7 +26,7 @@ class WalletController extends ApiAuthController
     {
         $form = new CreateWalletForm();
         $form->load(Yii::$app->request->post());
-        $form->setCreatorUser($this->_user);
+        $form->setUser($this->_user);
 
         if ($wallet = $form->save())
             return [

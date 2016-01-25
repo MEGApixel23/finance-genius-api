@@ -6,11 +6,11 @@ use api\v1\forms\ApiForm;
 use api\v1\models\Currency;
 use api\v1\models\queries\CurrencyActiveQuery;
 use api\v1\models\Wallet;
+use api\v1\models\WalletAmount;
 
 class CreateWalletForm extends ApiForm
 {
     public $name;
-    public $user_id;
     public $currency_id;
     public $amount;
 
@@ -21,10 +21,6 @@ class CreateWalletForm extends ApiForm
         return [
             ['name', 'required'],
             ['name', 'string'],
-
-            ['user_id', 'required'],
-            ['user_id', 'integer'],
-            ['user_id', 'userValidator'],
 
             ['currency_id', 'required'],
             ['currency_id', 'integer'],
@@ -40,7 +36,7 @@ class CreateWalletForm extends ApiForm
             $this->_currency = CurrencyActiveQuery::findActive()->andWhere(['id' => $this->$attr])->limit(1)->one();
 
             if (!$this->_currency) {
-                $this->addError($attr, 'There is no such currency3');
+                $this->addError($attr, 'There is no such currency');
                 return false;
             }
 
@@ -50,7 +46,7 @@ class CreateWalletForm extends ApiForm
                 return false;
             }
 
-            if (!$this->_creatorUser->isInSameGroup($user)) {
+            if (!$this->_user->isInSameGroup($user)) {
                 $this->addError($attr, 'This currency belongs to another User');
                 return false;
             }
@@ -67,9 +63,17 @@ class CreateWalletForm extends ApiForm
         $wallet->setUser($this->_user);
 
         if ($wallet->save()) {
-            return [
-                'wallet' => $wallet
-            ];
+            $walletAmount = new WalletAmount();
+
+            $walletAmount->wallet_id = $wallet->id;
+            $walletAmount->currency_id = $this->_currency->id;
+            $walletAmount->amount = (float) $this->amount;
+
+            if ($walletAmount->save()) {
+                return [
+                    'wallet' => $wallet
+                ];
+            }
         }
 
         return false;
