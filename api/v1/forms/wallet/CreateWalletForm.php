@@ -71,7 +71,9 @@ class CreateWalletForm extends ApiForm
 
             if ($walletAmount->save()) {
                 return [
-                    'wallet' => $wallet
+                    'wallet' => array_merge($wallet->toArray(), [
+                        'amounts' => $wallet->getAmounts()->all()
+                    ])
                 ];
             }
         }

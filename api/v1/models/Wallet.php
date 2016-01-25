@@ -75,7 +75,7 @@ class Wallet extends ApiActiveRecord implements IWallet
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getWalletAmounts()
+    public function getAmounts()
     {
         return $this->hasMany(WalletAmount::className(), ['wallet_id' => 'id']);
     }
