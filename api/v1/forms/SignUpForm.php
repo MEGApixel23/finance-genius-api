@@ -2,11 +2,12 @@
 
 namespace api\v1\forms;
 
-use api\v1\models\Device;
+use api\v1\models\Client;
+use Yii;
 use api\v1\models\User;
-use yii\base\Model;
+use yii\base\ErrorException;
 
-class SignUpForm extends Model
+class SignUpForm extends ApiForm
 {
     public $email;
     public $password;
@@ -26,36 +27,42 @@ class SignUpForm extends Model
         ];
     }
 
-    public function emailValidator($attr, $params)
-    {
-        if (!$this->hasErrors($attr)) {
-            $existedUser = User::find()->where([$attr => $this->$attr])->limit(1)->one();
-
-            if ($existedUser) {
-                $this->addError($attr, $params['message']);
-                return false;
-            }
-        }
-    }
-
+    /**
+     * @return array|bool
+     * @throws \yii\db\Exception
+     */
     public function signUp()
     {
-        $user = new User();
-
-        $user->email = $this->email;
-        $user->password_hash = $this->password;
-
-        if (!$user->save())
+        if (!$this->validate())
             return false;
 
-        $device = new Device();
-        $device->user_id = $user->id;
-        $device->generateToken();
+        $dbTransaction = Yii::$app->db->beginTransaction();
 
-        if (!$device->save()) {
+        try {
+            $user = new User();
+
+            $user->email = $this->email;
+            $user->setPassword($this->password);
+
+            if (!$user->save())
+                throw new ErrorException('Could not create User');
+
+            $client = new Client();
+            $client->setUser($user);
+            $client->generateToken();
+
+            if (!$client->save())
+                throw new ErrorException('Could not create Client');
+
+        } catch (ErrorException $e) {
+            $dbTransaction->rollBack();
             return false;
         }
 
-        return ['user' => $user, 'device' => $device];
+        $dbTransaction->commit();
+        return [
+            'user' => $user,
+            'client' => $client
+        ];
     }
 }

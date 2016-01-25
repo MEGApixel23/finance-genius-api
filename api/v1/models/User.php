@@ -122,4 +122,14 @@ class User extends ApiActiveRecord implements IUser
 
         return $userQuery;
     }
+
+    public function setPassword($password)
+    {
+        $this->password_hash = md5($password);
+    }
+
+    public function validatePassword($password)
+    {
+        return $this->password_hash === md5($password);
+    }
 }
