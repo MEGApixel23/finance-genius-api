@@ -3,12 +3,9 @@
 namespace api\v1\forms\wallet;
 
 use api\v1\forms\ApiForm;
-use api\v1\models\interfaces\IUser;
-use api\v1\models\queries\GroupActiveQuery;
-use api\v1\models\queries\UserActiveQuery;
-use api\v1\models\User;
+use api\v1\models\Currency;
+use api\v1\models\queries\CurrencyActiveQuery;
 use api\v1\models\Wallet;
-use api\v1\models\WalletAmount;
 
 class CreateWalletForm extends ApiForm
 {
@@ -31,10 +28,33 @@ class CreateWalletForm extends ApiForm
 
             ['currency_id', 'required'],
             ['currency_id', 'integer'],
-            //['currency_id', 'currencyValidator'],
+            ['currency_id', 'currencyValidator'],
 
             ['amount', 'number'],
         ];
+    }
+
+    public function currencyValidator($attr)
+    {
+        if (!$this->hasErrors($attr)) {
+            $this->_currency = CurrencyActiveQuery::findActive()->andWhere(['id' => $this->$attr])->limit(1)->one();
+
+            if (!$this->_currency) {
+                $this->addError($attr, 'There is no such currency3');
+                return false;
+            }
+
+            $user = $this->_currency->user;
+            if (!$user) {
+                $this->addError($attr, 'There is no such currency');
+                return false;
+            }
+
+            if (!$this->_creatorUser->isInSameGroup($user)) {
+                $this->addError($attr, 'This currency belongs to another User');
+                return false;
+            }
+        }
     }
 
     public function save()

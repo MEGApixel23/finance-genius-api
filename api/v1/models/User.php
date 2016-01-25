@@ -4,6 +4,7 @@ namespace api\v1\models;
 
 use api\v1\models\interfaces\IUser;
 use Yii;
+use api\v1\models\queries\GroupActiveQuery;
 
 /**
  * This is the model class for table "user".
@@ -121,5 +122,20 @@ class User extends ApiActiveRecord implements IUser
     public function validatePassword($password)
     {
         return $this->password_hash === md5($password);
+    }
+
+    public function isInSameGroup(IUser $user)
+    {
+        $users = GroupActiveQuery::findUsersInGroup($user);
+        $validated = call_user_func(function($users, $user) {
+            for ($i = 0; $i < count($users); $i++) {
+                if ($users[$i]->id == $user->id)
+                    return true;
+            }
+
+            return false;
+        }, $users, $this);
+
+        return $validated;
     }
 }
