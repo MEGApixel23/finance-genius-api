@@ -5,6 +5,7 @@ namespace api\v1\models;
 use api\v1\models\interfaces\IUser;
 use Yii;
 use api\v1\models\queries\GroupActiveQuery;
+use yii\db\ActiveQuery;
 
 /**
  * This is the model class for table "user".
@@ -100,6 +101,9 @@ class User extends ApiActiveRecord implements IUser
         return $this->hasMany(UserGroup::className(), ['user_id' => 'id']);
     }
 
+    /**
+     * @return ActiveQuery
+     */
     public function getGroup()
     {
         return $this->hasOne(Group::className(), ['id' => 'group_id'])
@@ -137,5 +141,12 @@ class User extends ApiActiveRecord implements IUser
         }, $users, $this);
 
         return $validated;
+    }
+
+    public function getUsersFromGroup()
+    {
+        $group = $this->getGroup()->one();
+
+        return $group->getUsers()->all();
     }
 }

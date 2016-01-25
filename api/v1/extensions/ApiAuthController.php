@@ -2,10 +2,15 @@
 
 namespace api\v1\extensions;
 
-use api\v1\models\queries\UserActiveQuery;
 use Yii;
-use api\v1\models\User;
+use api\v1\models\queries\UserActiveQuery;
 
+/**
+ * Class ApiAuthController
+ * @package api\v1\extensions
+ *
+ * @property $_user api\v1\models\User
+ */
 class ApiAuthController extends ApiBaseController
 {
     protected $_user;

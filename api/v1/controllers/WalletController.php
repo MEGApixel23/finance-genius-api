@@ -5,7 +5,7 @@ namespace api\v1\controllers;
 use api\v1\forms\wallet\CreateWalletForm;
 use Yii;
 use api\v1\extensions\ApiAuthController;
-use api\v1\models\Wallet;
+use yii\helpers\ArrayHelper;
 use api\v1\models\queries\WalletActiveQuery;
 
 class WalletController extends ApiAuthController
@@ -13,7 +13,7 @@ class WalletController extends ApiAuthController
     public function actionIndex()
     {
         $wallets = WalletActiveQuery::findActive()->andWhere([
-            'user_id' => $this->_user->id
+            'user_id' => ArrayHelper::getColumn($this->_user->getUsersFromGroup(), 'id')
         ])->with('amounts')->asArray()->all();
 
         return [
