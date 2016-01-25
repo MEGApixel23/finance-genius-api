@@ -14,7 +14,7 @@ class WalletController extends ApiAuthController
     {
         $wallets = WalletActiveQuery::findActive()->andWhere([
             'user_id' => $this->_user->id
-        ])->all();
+        ])->with('amounts')->asArray()->all();
 
         return [
             'status' => true,
@@ -28,42 +28,15 @@ class WalletController extends ApiAuthController
         $form->load(Yii::$app->request->post());
         $form->setUser($this->_user);
 
-        if ($wallet = $form->save())
+        if ($result = $form->save())
             return [
                 'status' => true,
-                'result' => $wallet
+                'result' => $result
             ];
 
         return [
             'status' => false,
             'errors' => $form->errors
-        ];
-    }
-
-    public function actionUpdate()
-    {
-        $wallet = WalletActiveQuery::findActive()->andWhere([
-            'user_id' => $this->_user->id,
-            'id' => (int) Yii::$app->request->get('id')
-        ])->limit(1)->one();
-
-        if (!$wallet)
-            return [
-                'status' => false,
-                'error_code' => 'not_found'
-            ];
-
-        $wallet->load(Yii::$app->request->post());
-
-        if ($wallet->save())
-            return [
-                'status' => true,
-                'result' => $wallet
-            ];
-
-        return [
-            'status' => false,
-            'errors' => $wallet->errors
         ];
     }
 }
