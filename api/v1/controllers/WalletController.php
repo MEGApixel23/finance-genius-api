@@ -2,6 +2,7 @@
 
 namespace api\v1\controllers;
 
+use api\v1\forms\wallet\CreateWalletForm;
 use Yii;
 use api\v1\extensions\ApiAuthController;
 use api\v1\models\Wallet;
@@ -23,9 +24,9 @@ class WalletController extends ApiAuthController
 
     public function actionCreate()
     {
-        $wallet = new Wallet();
+        $wallet = new CreateWalletForm();
         $wallet->load(Yii::$app->request->post());
-        $wallet->setUser($this->_user);
+        $wallet->setCreatorUser($this->_user);
 
         if ($wallet->save())
             return [

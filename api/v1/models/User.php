@@ -99,28 +99,18 @@ class User extends ApiActiveRecord implements IUser
         return $this->hasMany(UserGroup::className(), ['user_id' => 'id']);
     }
 
+    public function getGroup()
+    {
+        return $this->hasOne(Group::className(), ['id' => 'group_id'])
+            ->via('userGroups');
+    }
+
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getWallets()
     {
         return $this->hasMany(Wallet::className(), ['user_id' => 'id']);
-    }
-
-    /**
-     * @param $token
-     * @return ActiveQuery|null
-     */
-    public static function findByToken($token)
-    {
-        $userQuery = null;
-        $client = Client::find()->where(['token' => $token])->limit(1)->one();
-
-        if ($client) {
-            $userQuery = User::find()->andWhere(['id' => $client->user_id]);
-        }
-
-        return $userQuery;
     }
 
     public function setPassword($password)

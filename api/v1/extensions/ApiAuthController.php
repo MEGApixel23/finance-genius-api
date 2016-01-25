@@ -2,6 +2,7 @@
 
 namespace api\v1\extensions;
 
+use api\v1\models\queries\UserActiveQuery;
 use Yii;
 use api\v1\models\User;
 
@@ -18,7 +19,7 @@ class ApiAuthController extends ApiBaseController
         $user = null;
 
         if ($token) {
-            $userQuery = User::findByToken($token);
+            $userQuery = UserActiveQuery::findByToken($token);
             $user = $userQuery ? $userQuery->limit(1)->one() : null;
 
             $this->_user = $user;
@@ -28,7 +29,8 @@ class ApiAuthController extends ApiBaseController
             Yii::$app->response->format = 'json';
             Yii::$app->response->data = [
                 'status' => false,
-                'error_code' => 'no_token'
+                'error' => 'WRONG_TOKEN',
+                'error_code' => 'WRONG_TOKEN'
             ];
 
             return false;

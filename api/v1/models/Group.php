@@ -58,4 +58,10 @@ class Group extends ApiActiveRecord implements IGroup
     {
         return $this->hasMany(UserGroup::className(), ['group_id' => 'id']);
     }
+
+    public function getUsers()
+    {
+        return $this->hasMany(User::className(), ['id' => 'user_id'])
+            ->via('userGroups');
+    }
 }
