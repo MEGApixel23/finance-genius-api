@@ -24,19 +24,19 @@ class WalletController extends ApiAuthController
 
     public function actionCreate()
     {
-        $wallet = new CreateWalletForm();
-        $wallet->load(Yii::$app->request->post());
-        $wallet->setCreatorUser($this->_user);
+        $form = new CreateWalletForm();
+        $form->load(Yii::$app->request->post());
+        $form->setCreatorUser($this->_user);
 
-        if ($wallet->save())
+        if ($wallet = $form->save())
             return [
                 'status' => true,
-                'result' => WalletActiveQuery::findActive()->andWhere(['id' => $wallet->id])->limit(1)->one()
+                'result' => $wallet
             ];
 
         return [
             'status' => false,
-            'errors' => $wallet->errors
+            'errors' => $form->errors
         ];
     }
 
