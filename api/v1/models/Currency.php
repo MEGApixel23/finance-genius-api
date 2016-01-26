@@ -3,6 +3,7 @@
 namespace api\v1\models;
 
 use api\v1\models\interfaces\ICurrency;
+use api\v1\models\queries\CurrencyActiveQuery;
 use Yii;
 
 /**
@@ -71,5 +72,13 @@ class Currency extends ApiActiveRecord implements ICurrency
     public function getWalletAmounts()
     {
         return $this->hasMany(WalletAmount::className(), ['currency_id' => 'id']);
+    }
+
+    /**
+     * @return CurrencyActiveQuery
+     */
+    public static function find()
+    {
+        return new CurrencyActiveQuery(get_called_class());
     }
 }

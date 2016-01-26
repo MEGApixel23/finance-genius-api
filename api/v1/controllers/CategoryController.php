@@ -14,9 +14,7 @@ class CategoryController extends ApiAuthController
     {
         return [
             'status' => true,
-            'result' => CategoryActiveQuery::findActive()->andWhere([
-                'user_id' => ArrayHelper::getColumn($this->_user->getUsersFromGroup(), 'id')
-            ])->all()
+            'result' => Category::find()->active()->forUsersInSameGroup($this->_user)->all()
         ];
     }
 

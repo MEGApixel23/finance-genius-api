@@ -3,6 +3,7 @@
 namespace api\v1\models;
 
 use api\v1\models\interfaces\IWallet;
+use api\v1\models\queries\WalletActiveQuery;
 use Yii;
 
 /**
@@ -78,5 +79,13 @@ class Wallet extends ApiActiveRecord implements IWallet
     public function getAmounts()
     {
         return $this->hasMany(WalletAmount::className(), ['wallet_id' => 'id']);
+    }
+
+    /**
+     * @return WalletActiveQuery
+     */
+    public static function find()
+    {
+        return new WalletActiveQuery(get_called_class());
     }
 }

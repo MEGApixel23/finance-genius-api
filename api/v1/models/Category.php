@@ -3,6 +3,7 @@
 namespace api\v1\models;
 
 use api\v1\models\interfaces\ICategory;
+use api\v1\models\queries\CategoryActiveQuery;
 use Yii;
 
 /**
@@ -80,5 +81,10 @@ class Category extends ApiActiveRecord implements ICategory
     public function getTransactions()
     {
         return $this->hasMany(Transaction::className(), ['category_id' => 'id']);
+    }
+
+    public static function find()
+    {
+        return new CategoryActiveQuery(get_called_class());
     }
 }

@@ -33,7 +33,7 @@ class CreateWalletForm extends ApiForm
     public function currencyValidator($attr)
     {
         if (!$this->hasErrors($attr)) {
-            $this->_currency = CurrencyActiveQuery::findActive()->andWhere(['id' => $this->$attr])->limit(1)->one();
+            $this->_currency = Currency::find()->active()->andWhere(['id' => $this->$attr])->limit(1)->one();
 
             if (!$this->_currency) {
                 $this->addError($attr, 'There is no such currency');

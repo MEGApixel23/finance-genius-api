@@ -151,6 +151,9 @@ class User extends ApiActiveRecord implements IUser
         return $group->getUsers()->all();
     }
 
+    /**
+     * @return UserActiveQuery
+     */
     public static function find()
     {
         return new UserActiveQuery(get_called_class());

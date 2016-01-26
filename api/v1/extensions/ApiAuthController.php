@@ -18,28 +18,34 @@ class ApiAuthController extends ApiBaseController
 
     public function beforeAction($action)
     {
+        Yii::$app->response->format = 'json';
+
         $token = call_user_func(function() {
             $headers = Yii::$app->request->headers;
             return isset($headers['token']) ? $headers['token'] : null;
         });
-        $user = null;
 
-        if ($token) {
-            $user = User::find()->active()->withToken($token)->one();
-
-            $this->_user = $user;
+        if (!$token) {
+            Yii::$app->response->data = [
+                'status' => false,
+                'error' => 'NO_TOKEN',
+                'error_code' => 'NO_TOKEN'
+            ];
+            return false;
         }
 
+        $user = User::find()->active()->withToken($token)->one();
+
         if (!$user) {
-            Yii::$app->response->format = 'json';
             Yii::$app->response->data = [
                 'status' => false,
                 'error' => 'WRONG_TOKEN',
                 'error_code' => 'WRONG_TOKEN'
             ];
-
             return false;
         }
+
+        $this->_user = $user;
 
         return parent::beforeAction($action);
     }
