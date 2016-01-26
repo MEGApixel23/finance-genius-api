@@ -11,7 +11,7 @@ class TimestampMigration extends Migration
         return array_merge($array, [
             'created_at' => $this->integer(10),
             'updated_at' => $this->integer(10),
-            'deleted' => $this->boolean()->defaultValue(0),
+            'deleted' => $this->boolean()->defaultValue(false),
         ]);
     }
 }
