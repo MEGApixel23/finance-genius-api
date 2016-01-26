@@ -51,6 +51,10 @@ $config = [
                 // Categories
                 'GET /category' => 'v1/category/index',
                 'POST /category' => 'v1/category/create',
+
+                // Currency
+                'GET /currency' => 'v1/currency/index',
+                'POST /currency' => 'v1/currency/create',
             ],
         ],
 

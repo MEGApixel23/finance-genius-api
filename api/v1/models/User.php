@@ -131,7 +131,7 @@ class User extends ApiActiveRecord implements IUser
 
     public function isInSameGroup(IUser $user)
     {
-        $users = GroupActiveQuery::findUsersInGroup($user);
+        $users = $this->getUsersFromGroup();
         $validated = call_user_func(function($users, $user) {
             for ($i = 0; $i < count($users); $i++) {
                 if ($users[$i]->id == $user->id)

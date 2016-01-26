@@ -4,34 +4,33 @@ namespace api\v1\controllers;
 
 use Yii;
 use api\v1\extensions\ApiAuthController;
-use api\v1\models\Category;
-use api\v1\forms\category\CreateCategoryForm;
+use api\v1\forms\currency\CreateCurrencyForm;
+use api\v1\models\Currency;
 
-class CategoryController extends ApiAuthController
+class CurrencyController extends ApiAuthController
 {
     public function actionIndex()
     {
         return [
             'status' => true,
-            'result' => Category::find()->active()->forUsersInSameGroup($this->_user)->all()
+            'result' => Currency::find()->active()->forUsersInSameGroup($this->_user)->all()
         ];
     }
 
     public function actionCreate()
     {
-        $form = new CreateCategoryForm();
-        $form->setUser($this->_user);
+        $form = new CreateCurrencyForm();
         $form->load(Yii::$app->request->post());
+        $form->setUser($this->_user);
 
-        if ($form->save()) {
+        if ($form->save())
             return [
                 'status' => true,
-                'result' => $form->getCategory()
+                'result' => $form->getCurrency()
             ];
-        }
 
         return [
-            'status' => true,
+            'status' => false,
             'errors' => $form->errors
         ];
     }

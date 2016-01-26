@@ -70,11 +70,9 @@ class CreateWalletForm extends ApiForm
             $walletAmount->amount = (float) $this->amount;
 
             if ($walletAmount->save()) {
-                return [
-                    'wallet' => array_merge($wallet->toArray(), [
-                        'amounts' => $wallet->getAmounts()->all()
-                    ])
-                ];
+                return [array_merge($wallet->toArray(), [
+                    'amounts' => $wallet->getAmounts()->all()
+                ])];
             }
         }
 

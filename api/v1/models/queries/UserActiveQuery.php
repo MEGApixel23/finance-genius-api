@@ -10,8 +10,8 @@ class UserActiveQuery extends ApiActiveQuery
     {
         $client = Client::find()->andWhere(['token' => $token])->limit(1)->one();
 
-        /* @var $client Client */
-        $this->andWhere(['id' => isset($client->user_id) ? $client->user_id : 0]);
-        return $this;
+        return $this->andWhere([
+            'id' => isset($client->user_id) ? $client->user_id : 0
+        ]);
     }
 }
