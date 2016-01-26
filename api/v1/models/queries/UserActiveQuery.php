@@ -3,32 +3,23 @@
 namespace api\v1\models\queries;
 
 use api\v1\models\Client;
-use api\v1\models\User;
-use yii\db\ActiveQuery;
 
-class UserActiveQuery extends ActiveQuery
+class UserActiveQuery extends ApiActiveQuery
 {
-    /**
-     * @return $this
-     */
-    public static function findActive()
+    public function active()
     {
-        return User::find()->andWhere(['deleted' => 0]);
+        return $this->andWhere(['deleted' => false]);
     }
 
-    /**
-     * @param $token
-     * @return ActiveQuery|null
-     */
-    public static function findByToken($token)
+    public function withToken($token)
     {
-        $userQuery = null;
         $client = Client::find()->where(['token' => $token])->limit(1)->one();
 
+        /* @var $client Client */
         if ($client) {
-            $userQuery = static::findActive()->andWhere(['id' => $client->user_id]);
+            $this->andWhere(['id' => $client->user_id]);
         }
 
-        return $userQuery;
+        return $this;
     }
 }

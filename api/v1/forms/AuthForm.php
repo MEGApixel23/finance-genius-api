@@ -3,6 +3,7 @@
 namespace api\v1\forms;
 
 use api\v1\models\queries\ClientActiveQuery;
+use api\v1\models\User;
 use Yii;
 use api\v1\models\queries\UserActiveQuery;
 use api\v1\models\Client;
@@ -29,7 +30,7 @@ class AuthForm extends ApiForm
     public function userValidator()
     {
         if (!$this->hasErrors()) {
-            $user = UserActiveQuery::findActive()->andWhere([
+            $user = User::find()->active()->andWhere([
                 'email' => $this->email
             ])->limit(1)->one();
 

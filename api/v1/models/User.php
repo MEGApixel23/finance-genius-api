@@ -3,6 +3,7 @@
 namespace api\v1\models;
 
 use api\v1\models\interfaces\IUser;
+use api\v1\models\queries\UserActiveQuery;
 use Yii;
 use api\v1\models\queries\GroupActiveQuery;
 use yii\db\ActiveQuery;
@@ -148,5 +149,10 @@ class User extends ApiActiveRecord implements IUser
         $group = $this->getGroup()->one();
 
         return $group->getUsers()->all();
+    }
+
+    public static function find()
+    {
+        return new UserActiveQuery(get_called_class());
     }
 }
