@@ -35,8 +35,8 @@ class Client extends ApiActiveRecord implements IClient
     {
         return [
             [['user_id'], 'required'],
-            [['user_id', 'created_at', 'updated_at', 'deleted'], 'integer'],
             [['token_expires_at'], 'integer'],
+            [['user_id', 'created_at', 'updated_at', 'deleted'], 'integer'],
             [['token'], 'string', 'max' => 255],
             [['token'], 'unique']
         ];
@@ -66,9 +66,17 @@ class Client extends ApiActiveRecord implements IClient
         return $this->hasOne(User::className(), ['id' => 'user_id']);
     }
 
+    /**
+     * @return string
+     */
     public function generateToken()
     {
-        $this->token = (string) time();
+        $this->token = Yii::$app->security->generateRandomString(32);
+
+        if (static::find()->where(['token' => $this->token])->exists()) {
+            return $this->generateToken();
+        }
+
         $this->token_expires_at = time() + 10000;
 
         return $this->token;

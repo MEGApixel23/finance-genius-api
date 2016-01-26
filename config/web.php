@@ -44,18 +44,12 @@ $config = [
                 'POST /sign-up' => 'v1/auth/sign-up',
                 'POST /auth' => 'v1/auth/auth',
 
-                // Transactions
-                'GET /transaction' => 'v1/transaction/index',
-                'POST /transaction' => 'v1/transaction/create',
-
                 // Wallets
                 'GET /wallet' => 'v1/wallet/index',
                 'POST /wallet' => 'v1/wallet/create',
-                'PUT /wallet/<id:\d+>' => 'v1/wallet/update',
 
                 // Categories
                 'GET /category' => 'v1/category/index',
-                'GET /categories' => 'v1/category/index',
                 'POST /category' => 'v1/category/create',
             ],
         ],

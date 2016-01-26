@@ -22,7 +22,7 @@ class TransactionController extends ApiAuthController
     public function actionCreate()
     {
         $transaction = new Transaction();
-        $transaction->load(Yii::$app->request->post(), '');
+        $transaction->load(Yii::$app->request->post());
         $transaction->setUser($this->_user);
 
         if ($transaction->validate() && $transaction->save()) {

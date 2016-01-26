@@ -2,12 +2,12 @@
 
 namespace api\v1\forms;
 
-use api\v1\models\Device;
-use api\v1\models\queries\DeviceActiveQuery;
+use api\v1\models\queries\ClientActiveQuery;
+use Yii;
 use api\v1\models\queries\UserActiveQuery;
-use yii\base\Model;
+use api\v1\models\Client;
 
-class AuthForm extends Model
+class AuthForm extends ApiForm
 {
     public $email;
     public $password;
@@ -26,13 +26,17 @@ class AuthForm extends Model
         ];
     }
 
-    public function userValidator($attr)
+    public function userValidator()
     {
         if (!$this->hasErrors()) {
-            $user = UserActiveQuery::findActive()->andWhere(['email' => $this->email])->limit(1)->one();
+            $user = UserActiveQuery::findActive()->andWhere([
+                'email' => $this->email
+            ])->limit(1)->one();
 
-            if (!$user || !$user->validatePassword($this->$attr)) {
-                $this->addError($attr, 'Wrong auth data.');
+            /* @var $user \api\v1\models\User */
+
+            if (!$user || !$user->validatePassword($this->password)) {
+                $this->addError('password', 'Wrong auth data.');
                 return false;
             }
 
@@ -43,13 +47,21 @@ class AuthForm extends Model
 
     public function auth()
     {
-        $device = DeviceActiveQuery::findActive()->andWhere([
-            'user_id' => $this->_user->id
-        ])->limit(1)->one();
+        if (!$this->validate())
+            return false;
+
+        $client = new Client();
+        $client->setUser($this->_user);
+        $client->generateToken();
+
+        if (!$client->save()) {
+            $this->addError('password', 'Could not create Client');
+            return false;
+        }
 
         return [
             'user' => $this->_user,
-            'device' => $device
+            'client' => $client
         ];
     }
 }

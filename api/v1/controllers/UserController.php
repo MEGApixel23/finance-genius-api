@@ -12,39 +12,43 @@ class UserController extends ApiBaseController
     public function actionAuth()
     {
         $form = new AuthForm();
-        $form->load(Yii::$app->request->post(), '');
+        $form->load(Yii::$app->request->post());
 
-        if ($form->validate() && ($result = $form->auth())) {
+        if ($data = $form->auth()) {
             return [
                 'status' => true,
-                'result' => $result
+                'data' => $data
             ];
         }
 
         return [
             'status' => false,
-            'error' => $form->errors
+            'error' => 'VALIDATION_ERROR',
+            'error_code' => 'VALIDATION_ERROR',
+            'data' => $form->errors
         ];
     }
 
+    /**
+     * @return array
+     */
     public function actionSignUp()
     {
         $form = new SignUpForm();
-        $form->load(Yii::$app->request->post(), '');
+        $form->load(Yii::$app->request->post());
 
-        if ($form->validate() && ($result = $form->signUp())) {
+        if ($data = $form->signUp()) {
             return [
                 'status' => true,
-                'result' => [
-                    'user' => $result['user'],
-                    'device' => $result['device'],
-                ]
+                'data' => $data
             ];
         }
 
         return [
             'status' => false,
-            'error' => $form->errors
+            'error' => 'VALIDATION_ERROR',
+            'error_code' => 'VALIDATION_ERROR',
+            'data' => $form->errors
         ];
     }
 }

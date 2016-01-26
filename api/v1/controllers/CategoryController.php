@@ -6,6 +6,7 @@ use Yii;
 use api\v1\extensions\ApiAuthController;
 use api\v1\models\Category;
 use api\v1\models\queries\CategoryActiveQuery;
+use yii\helpers\ArrayHelper;
 
 class CategoryController extends ApiAuthController
 {
@@ -13,8 +14,8 @@ class CategoryController extends ApiAuthController
     {
         return [
             'status' => true,
-            'result' => CategoryActiveQuery::findActive()->where([
-                'user_id' => $this->_user->id
+            'result' => CategoryActiveQuery::findActive()->andWhere([
+                'user_id' => ArrayHelper::getColumn($this->_user->getUsersFromGroup(), 'id')
             ])->all()
         ];
     }

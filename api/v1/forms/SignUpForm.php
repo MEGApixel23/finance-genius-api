@@ -3,9 +3,9 @@
 namespace api\v1\forms;
 
 use api\v1\models\Client;
-use api\v1\models\Device;
+use Yii;
 use api\v1\models\User;
-use yii\base\Model;
+use yii\base\ErrorException;
 
 class SignUpForm extends ApiForm
 {
@@ -27,28 +27,42 @@ class SignUpForm extends ApiForm
         ];
     }
 
+    /**
+     * @return array|bool
+     * @throws \yii\db\Exception
+     */
     public function signUp()
     {
         if (!$this->validate())
             return false;
 
-        $user = new User();
+        $dbTransaction = Yii::$app->db->beginTransaction();
 
-        $user->email = $this->email;
-        $user->setPassword($this->password);
+        try {
+            $user = new User();
 
-        if (!$user->save())
-            return false;
+            $user->email = $this->email;
+            $user->setPassword($this->password);
 
-        $client = new Client();
-        $client->setUser($user);
-        $client->generateToken();
+            if (!$user->save())
+                throw new ErrorException('Could not create User');
 
-        if (!$client->save()) {
-            print_r($client); die();
+            $client = new Client();
+            $client->setUser($user);
+            $client->generateToken();
+
+            if (!$client->save())
+                throw new ErrorException('Could not create Client');
+
+        } catch (ErrorException $e) {
+            $dbTransaction->rollBack();
             return false;
         }
 
-        return ['user' => $user, 'client' => $client];
+        $dbTransaction->commit();
+        return [
+            'user' => $user,
+            'client' => $client
+        ];
     }
 }

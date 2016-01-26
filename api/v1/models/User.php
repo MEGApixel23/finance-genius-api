@@ -2,8 +2,9 @@
 
 namespace api\v1\models;
 
-use Yii;
 use api\v1\models\interfaces\IUser;
+use Yii;
+use api\v1\models\queries\GroupActiveQuery;
 use yii\db\ActiveQuery;
 
 /**
@@ -101,6 +102,15 @@ class User extends ApiActiveRecord implements IUser
     }
 
     /**
+     * @return ActiveQuery
+     */
+    public function getGroup()
+    {
+        return $this->hasOne(Group::className(), ['id' => 'group_id'])
+            ->via('userGroups');
+    }
+
+    /**
      * @return \yii\db\ActiveQuery
      */
     public function getWallets()
@@ -113,19 +123,30 @@ class User extends ApiActiveRecord implements IUser
         $this->password_hash = md5($password);
     }
 
-    /**
-     * @param $token
-     * @return ActiveQuery|null
-     */
-    public static function findByToken($token)
+    public function validatePassword($password)
     {
-        $userQuery = null;
-        $client = Client::find()->where(['token' => $token])->limit(1)->one();
+        return $this->password_hash === md5($password);
+    }
 
-        if ($client) {
-            $userQuery = User::find()->andWhere(['id' => $client->user_id]);
-        }
+    public function isInSameGroup(IUser $user)
+    {
+        $users = GroupActiveQuery::findUsersInGroup($user);
+        $validated = call_user_func(function($users, $user) {
+            for ($i = 0; $i < count($users); $i++) {
+                if ($users[$i]->id == $user->id)
+                    return true;
+            }
 
-        return $userQuery;
+            return false;
+        }, $users, $this);
+
+        return $validated;
+    }
+
+    public function getUsersFromGroup()
+    {
+        $group = $this->getGroup()->one();
+
+        return $group->getUsers()->all();
     }
 }

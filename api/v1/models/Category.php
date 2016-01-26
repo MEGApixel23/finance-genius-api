@@ -15,12 +15,17 @@ use Yii;
  * @property integer $created_at
  * @property integer $updated_at
  * @property integer $deleted
+ * @property integer|null $category_id
  *
  * @property User $user
  * @property Transaction[] $transactions
  */
 class Category extends ApiActiveRecord implements ICategory
 {
+    const TYPE_INCOME = 1;
+    const TYPE_OUTCOME = 2;
+    const TYPE_COMMON = null;
+
     /**
      * @inheritdoc
      */
@@ -36,7 +41,11 @@ class Category extends ApiActiveRecord implements ICategory
     {
         return [
             [['user_id'], 'required'],
-            [['user_id', 'type', 'created_at', 'updated_at', 'deleted'], 'integer'],
+            [['user_id', 'created_at', 'updated_at', 'deleted'], 'integer'],
+
+            ['type', 'in', 'range' => [self::TYPE_INCOME, self::TYPE_OUTCOME, self::TYPE_COMMON]],
+
+            [['category_id'], 'integer'],
             [['name'], 'string', 'max' => 255]
         ];
     }
