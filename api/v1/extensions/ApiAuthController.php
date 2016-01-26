@@ -2,6 +2,7 @@
 
 namespace api\v1\extensions;
 
+use api\v1\models\User;
 use Yii;
 use api\v1\models\queries\UserActiveQuery;
 
@@ -24,8 +25,7 @@ class ApiAuthController extends ApiBaseController
         $user = null;
 
         if ($token) {
-            $userQuery = UserActiveQuery::findByToken($token);
-            $user = $userQuery ? $userQuery->limit(1)->one() : null;
+            $user = User::find()->active()->withToken($token)->one();
 
             $this->_user = $user;
         }
