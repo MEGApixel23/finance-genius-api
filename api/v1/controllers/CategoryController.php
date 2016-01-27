@@ -13,7 +13,7 @@ class CategoryController extends ApiAuthController
     {
         return [
             'status' => true,
-            'result' => Category::find()->active()->forUsersInSameGroup($this->_user)->all()
+            'data' => Category::find()->active()->forUsersInSameGroup($this->_user)->all()
         ];
     }
 

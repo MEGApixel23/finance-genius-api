@@ -20,7 +20,7 @@ class WalletController extends ApiAuthController
 
         return [
             'status' => true,
-            'result' => $wallets
+            'data' => $wallets
         ];
     }
 
@@ -33,12 +33,12 @@ class WalletController extends ApiAuthController
         if ($result = $form->save())
             return [
                 'status' => true,
-                'result' => $result
+                'data' => $result
             ];
 
         return [
             'status' => false,
-            'errors' => $form->errors
+            'data' => $form->errors
         ];
     }
 }
