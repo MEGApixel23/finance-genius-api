@@ -147,8 +147,9 @@ class User extends ApiActiveRecord implements IUser
     public function getUsersFromGroup()
     {
         $group = $this->getGroup()->one();
+        $users = $group ? $group->getUsers()->all() : [];
 
-        return $group->getUsers()->all();
+        return array_merge($users, [$this]);
     }
 
     /**

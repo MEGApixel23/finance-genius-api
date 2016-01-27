@@ -7,6 +7,7 @@ $config = [
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log', function () {
         header('Access-Control-Allow-Origin: *');
+        header('Access-Control-Allow-Headers: token');
     }],
 
     'modules' => [
@@ -47,14 +48,17 @@ $config = [
                 // Wallets
                 'GET /wallet' => 'v1/wallet/index',
                 'POST /wallet' => 'v1/wallet/create',
+                'OPTIONS /wallet' => 'v1/wallet/index',
 
                 // Categories
                 'GET /category' => 'v1/category/index',
                 'POST /category' => 'v1/category/create',
+                'OPTIONS /category' => 'v1/wallet/index',
 
                 // Currency
                 'GET /currency' => 'v1/currency/index',
                 'POST /currency' => 'v1/currency/create',
+                'OPTIONS /currency' => 'v1/wallet/index',
             ],
         ],
 
