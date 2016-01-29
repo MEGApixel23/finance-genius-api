@@ -44,6 +44,8 @@ $config = [
                 // Auth & SignUp
                 'POST /sign-up' => 'v1/user/sign-up',
                 'POST /auth' => 'v1/user/auth',
+                'OPTIONS /auth' => 'v1/user/auth',
+                'OPTIONS /sign-up' => 'v1/user/auth',
 
                 // Wallets
                 'GET /wallet' => 'v1/wallet/index',
