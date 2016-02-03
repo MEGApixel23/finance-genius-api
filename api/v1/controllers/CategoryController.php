@@ -26,13 +26,13 @@ class CategoryController extends ApiAuthController
         if ($form->save()) {
             return [
                 'status' => true,
-                'result' => $form->getCategory()
+                'data' => $form->getCategory()
             ];
         }
 
         return [
             'status' => true,
-            'errors' => $form->errors
+            'data' => $form->errors
         ];
     }
 }

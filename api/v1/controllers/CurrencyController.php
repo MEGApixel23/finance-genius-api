@@ -13,7 +13,7 @@ class CurrencyController extends ApiAuthController
     {
         return [
             'status' => true,
-            'result' => Currency::find()->active()->forUsersInSameGroup($this->_user)->all()
+            'data' => Currency::find()->active()->forUsersInSameGroup($this->_user)->all()
         ];
     }
 
@@ -26,12 +26,12 @@ class CurrencyController extends ApiAuthController
         if ($form->save())
             return [
                 'status' => true,
-                'result' => $form->getCurrency()
+                'data' => $form->getCurrency()
             ];
 
         return [
             'status' => false,
-            'errors' => $form->errors
+            'data' => $form->errors
         ];
     }
 }
