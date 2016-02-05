@@ -42,6 +42,13 @@ class Wallet extends ApiActiveRecord implements IWallet
         ];
     }
 
+    public function extraFields()
+    {
+        return [
+            'transactions', 'user', 'amounts'
+        ];
+    }
+
     /**
      * @inheritdoc
      */

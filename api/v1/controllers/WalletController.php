@@ -2,6 +2,7 @@
 
 namespace api\v1\controllers;
 
+use api\v1\models\ApiActiveRecord;
 use Yii;
 use api\v1\models\Wallet;
 use api\v1\extensions\ApiAuthController;
@@ -14,7 +15,7 @@ class WalletController extends ApiAuthController
         $wallets = Wallet::find()
             ->active()
             ->forUsersInSameGroup($this->_user)
-            ->with('amounts')
+            ->expand(Yii::$app->request->getQueryParams())
             ->asArray()
             ->all();
 
@@ -38,6 +39,8 @@ class WalletController extends ApiAuthController
 
         return [
             'status' => false,
+            'error' => ApiActiveRecord::ERROR_VALIDATION,
+            'error_code' => ApiActiveRecord::ERROR_VALIDATION,
             'data' => $form->errors
         ];
     }

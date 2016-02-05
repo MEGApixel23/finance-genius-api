@@ -9,6 +9,8 @@ use api\v1\models\interfaces\IUser;
 
 class ApiActiveRecord extends ActiveRecord implements IApiActiveRecord
 {
+    const ERROR_VALIDATION = 'VALIDATION_ERROR';
+
     public function load($data, $formName = null)
     {
         return parent::load($data, '');

@@ -3,6 +3,7 @@
 namespace api\v1\controllers;
 
 use Yii;
+use api\v1\models\ApiActiveRecord;
 use api\v1\extensions\ApiAuthController;
 use api\v1\forms\currency\CreateCurrencyForm;
 use api\v1\models\Currency;
@@ -31,6 +32,8 @@ class CurrencyController extends ApiAuthController
 
         return [
             'status' => false,
+            'error' => ApiActiveRecord::ERROR_VALIDATION,
+            'error_code' => ApiActiveRecord::ERROR_VALIDATION,
             'data' => $form->errors
         ];
     }

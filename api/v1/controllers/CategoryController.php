@@ -2,6 +2,7 @@
 
 namespace api\v1\controllers;
 
+use api\v1\models\ApiActiveRecord;
 use Yii;
 use api\v1\extensions\ApiAuthController;
 use api\v1\models\Category;
@@ -32,6 +33,8 @@ class CategoryController extends ApiAuthController
 
         return [
             'status' => true,
+            'error' => ApiActiveRecord::ERROR_VALIDATION,
+            'error_code' => ApiActiveRecord::ERROR_VALIDATION,
             'data' => $form->errors
         ];
     }

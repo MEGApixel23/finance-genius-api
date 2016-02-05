@@ -2,6 +2,7 @@
 
 namespace api\v1\controllers;
 
+use api\v1\models\ApiActiveRecord;
 use Yii;
 use api\v1\forms\SignUpForm;
 use api\v1\extensions\ApiBaseController;
@@ -23,8 +24,8 @@ class UserController extends ApiBaseController
 
         return [
             'status' => false,
-            'error' => 'VALIDATION_ERROR',
-            'error_code' => 'VALIDATION_ERROR',
+            'error' => ApiActiveRecord::ERROR_VALIDATION,
+            'error_code' => ApiActiveRecord::ERROR_VALIDATION,
             'data' => $form->errors
         ];
     }
@@ -46,8 +47,8 @@ class UserController extends ApiBaseController
 
         return [
             'status' => false,
-            'error' => 'VALIDATION_ERROR',
-            'error_code' => 'VALIDATION_ERROR',
+            'error' => ApiActiveRecord::ERROR_VALIDATION,
+            'error_code' => ApiActiveRecord::ERROR_VALIDATION,
             'data' => $form->errors
         ];
     }
