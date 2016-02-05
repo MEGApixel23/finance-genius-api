@@ -41,26 +41,23 @@ $config = [
             'enableStrictParsing' => true,
             'showScriptName' => false,
             'rules' => [
+                'OPTIONS <url:.*>' =>  'v1/echo',
+
                 // Auth & SignUp
                 'POST /sign-up' => 'v1/user/sign-up',
                 'POST /auth' => 'v1/user/auth',
-                'OPTIONS /auth' => 'v1/user/auth',
-                'OPTIONS /sign-up' => 'v1/user/auth',
 
                 // Wallets
                 'GET /wallet' => 'v1/wallet/index',
                 'POST /wallet' => 'v1/wallet/create',
-                'OPTIONS /wallet' => 'v1/wallet/index',
 
                 // Categories
                 'GET /category' => 'v1/category/index',
                 'POST /category' => 'v1/category/create',
-                'OPTIONS /category' => 'v1/wallet/index',
 
                 // Currency
                 'GET /currency' => 'v1/currency/index',
                 'POST /currency' => 'v1/currency/create',
-                'OPTIONS /currency' => 'v1/wallet/index',
             ],
         ],
 
