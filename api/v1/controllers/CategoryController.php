@@ -12,9 +12,16 @@ class CategoryController extends ApiAuthController
 {
     public function actionIndex()
     {
+        $categories = Category::find()
+            ->active()
+            ->forUsersInSameGroup($this->_user)
+            ->expand(Yii::$app->request->getQueryParams())
+            ->asArray()
+            ->all();
+
         return [
             'status' => true,
-            'data' => Category::find()->active()->forUsersInSameGroup($this->_user)->all()
+            'data' => $categories
         ];
     }
 

@@ -67,6 +67,13 @@ class Category extends ApiActiveRecord implements ICategory
         ];
     }
 
+    public function extraFields()
+    {
+        return [
+            'user', 'transactions'
+        ];
+    }
+
     /**
      * @return \yii\db\ActiveQuery
      */
