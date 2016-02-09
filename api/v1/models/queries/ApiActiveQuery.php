@@ -32,7 +32,7 @@ class ApiActiveQuery extends ActiveQuery
     public function expand($data)
     {
         $model = new $this->modelClass();
-        $expand = isset($data['expand']) ? $data['expand'] : [];
+        $expand = isset($data['expand']) ? $data['expand'] : '';
         $relations = explode(',', $expand);
 
         if ($relations) {
