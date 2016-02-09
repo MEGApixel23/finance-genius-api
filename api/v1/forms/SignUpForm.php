@@ -47,6 +47,8 @@ class SignUpForm extends ApiForm
             if (!$user->save())
                 throw new ErrorException('Could not create User');
 
+            $this->_user = $user;
+
             $client = new Client();
             $client->setUser($user);
             $client->generateToken();
@@ -64,5 +66,10 @@ class SignUpForm extends ApiForm
             'user' => $user,
             'client' => $client
         ];
+    }
+
+    public function getUser()
+    {
+        return $this->_user;
     }
 }

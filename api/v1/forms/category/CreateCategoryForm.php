@@ -4,6 +4,7 @@ namespace api\v1\forms\category;
 
 use api\v1\forms\ApiForm;
 use api\v1\models\Category;
+use api\v1\models\interfaces\IUser;
 use api\v1\models\User;
 
 class CreateCategoryForm extends ApiForm
@@ -64,5 +65,45 @@ class CreateCategoryForm extends ApiForm
     public function getCategory()
     {
         return $this->_category;
+    }
+
+    public static function createDefault(IUser $user)
+    {
+        $categoryItems = [
+            // Outcome
+            [
+                'name' => 'Transport',
+                'type' => Category::TYPE_OUTCOME,
+            ], [
+                'name' => 'Food & Drinks',
+                'type' => Category::TYPE_OUTCOME,
+            ], [
+                'name' => 'Shopping',
+                'type' => Category::TYPE_OUTCOME,
+            ], [
+                'name' => 'Other',
+                'type' => Category::TYPE_OUTCOME,
+            ],
+
+            // Income
+            [
+                'name' => 'Salary',
+                'type' => Category::TYPE_INCOME,
+            ]
+        ];
+        $categories = [];
+
+        foreach ($categoryItems as $categoryItem) {
+            $category = new Category();
+
+            $category->name = $categoryItem['name'];
+            $category->type = $categoryItem['type'];
+            $category->setUser($user);
+
+            if ($category->save())
+                $categories[] = $category;
+        }
+
+        return $categories;
     }
 }

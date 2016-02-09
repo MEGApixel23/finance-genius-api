@@ -2,8 +2,10 @@
 
 namespace api\v1\controllers;
 
-use api\v1\models\ApiActiveRecord;
 use Yii;
+use api\v1\forms\category\CreateCategoryForm;
+use api\v1\models\ApiActiveRecord;
+use api\v1\forms\currency\CreateCurrencyForm;
 use api\v1\forms\SignUpForm;
 use api\v1\extensions\ApiBaseController;
 use api\v1\forms\AuthForm;
@@ -39,6 +41,10 @@ class UserController extends ApiBaseController
         $form->load(Yii::$app->request->post());
 
         if ($data = $form->signUp()) {
+            $user = $form->getUser();
+            CreateCategoryForm::createDefault($user);
+            CreateCurrencyForm::createDefault($user);
+
             return [
                 'status' => true,
                 'data' => $data

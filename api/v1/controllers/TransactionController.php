@@ -8,6 +8,7 @@ class TransactionController extends ApiAuthController
 {
     public function actionIndex()
     {
+
     }
 
     public function actionCreate()

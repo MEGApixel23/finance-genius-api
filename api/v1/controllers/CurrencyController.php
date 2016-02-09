@@ -12,9 +12,16 @@ class CurrencyController extends ApiAuthController
 {
     public function actionIndex()
     {
+        $currency = Currency::find()
+            ->active()
+            ->forUsersInSameGroup($this->_user)
+            ->expand(Yii::$app->request->getQueryParams())
+            ->asArray()
+            ->all();
+
         return [
             'status' => true,
-            'data' => Currency::find()->active()->forUsersInSameGroup($this->_user)->all()
+            'data' => $currency
         ];
     }
 
